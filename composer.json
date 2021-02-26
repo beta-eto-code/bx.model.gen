@@ -1,0 +1,6 @@
+{
+    "require": {
+        "symfony/console": "^5.2",
+        "nette/php-generator": "^3.5"
+    }
+}
