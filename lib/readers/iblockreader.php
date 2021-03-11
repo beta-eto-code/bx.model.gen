@@ -5,6 +5,7 @@ namespace Bx\Model\Gen\Readers;
 
 
 use Bitrix\Iblock\PropertyTable;
+use Bitrix\Main\Loader;
 use Bx\Model\Gen\Fields\Modifiers\IblockPropertyModifier;
 use Bx\Model\Gen\Fields\Modifiers\StdModifier;
 use Bx\Model\Gen\Interfaces\BitrixContextInterface;
@@ -51,6 +52,8 @@ final class IblockReader implements EntityReaderInterface
         PhpNamespace $namespace = null
     )
     {
+        Loader::includeModule('iblock');
+
         $this->type = $type;
         $this->code = $code;
         $this->bitrixContext = $bitrixContext;
@@ -91,26 +94,6 @@ final class IblockReader implements EntityReaderInterface
     }
 
     /**
-     * @return Iterator
-     */
-    public function getIterator(): Iterator
-    {
-        $nameModifier = new StdModifier();
-        foreach ($this->getFieldsData() as $fieldCode => $fieldType) {
-            yield $this->getFieldGenerator($fieldCode, $fieldType, $nameModifier);
-        }
-
-        $nameModifier = new IblockPropertyModifier();
-        foreach ($this->getPropertiesData() as $property) {
-            $typeCode = $property['PROPERTY_TYPE'];
-            $propertyCode = $property['CODE'];
-            yield $this->getFieldGenerator($propertyCode, $typeCode, $nameModifier);
-        }
-
-        return new EmptyIterator();
-    }
-
-    /**
      * @param string $fieldName
      * @param string $fieldType
      * @param FieldNameModifierInterface $fieldNameModifier
@@ -139,16 +122,25 @@ final class IblockReader implements EntityReaderInterface
     /**
      * @return FieldGeneratorInterface[]|array
      */
-    public function getFields(): array
+    public function getFields(FieldNameModifierInterface $fieldNameModifier = null): array
     {
         if (!empty($this->fields)) {
             return $this->fields;
         }
 
         $this->fields = [];
-        $nameModifier = new StdModifier();
+        $nameModifier = $fieldNameModifier ?? new StdModifier();
         foreach ($this->getFieldsData() as $fieldCode => $fieldType) {
-            $this->fields[] = $this->getFieldGenerator($fieldCode, $fieldType, $nameModifier);
+            $field = $this->getFieldGenerator($fieldCode, $fieldType, $nameModifier);
+            if ($fieldCode === 'ID') {
+                $field->setPrimary();
+            }
+
+            if (in_array($fieldCode, ['ID', 'NAME', 'ACTIVE'])) {
+                $field->setRequired();
+            }
+
+            $this->fields[] = $field;
         }
 
         $nameModifier = new IblockPropertyModifier();
@@ -159,5 +151,16 @@ final class IblockReader implements EntityReaderInterface
         }
 
         return $this->fields;
+    }
+
+    public function getPrimaryField(): ?FieldGeneratorInterface
+    {
+        foreach ($this->getFields() as $field) {
+            if ($field->isPrimary()) {
+                return $field;
+            }
+        }
+
+        return null;
     }
 }

@@ -10,7 +10,7 @@ use Nette\PhpGenerator\ClassType;
 use Nette\PhpGenerator\Method;
 use Nette\PhpGenerator\PhpNamespace;
 
-class BaseFieldGenerator implements FieldGeneratorInterface
+abstract class BaseFieldGenerator implements FieldGeneratorInterface
 {
     /**
      * @var string
@@ -24,12 +24,30 @@ class BaseFieldGenerator implements FieldGeneratorInterface
      * @var FieldNameModifierInterface
      */
     private $nameModifier;
+    /**
+     * @var false
+     */
+    private $required;
+    /**
+     * @var false
+     */
+    private $primary;
+    /**
+     * @var bool
+     */
+    private $unique;
+    /**
+     * @var mixed
+     */
+    private $defaultValue;
 
     public function __construct(string $name, string $type, FieldNameModifierInterface $fieldNameModifier)
     {
         $this->name = $name;
         $this->type = $type;
         $this->nameModifier = $fieldNameModifier;
+        $this->required = false;
+        $this->primary = false;
     }
 
     /**
@@ -102,5 +120,45 @@ class BaseFieldGenerator implements FieldGeneratorInterface
     public function initUse(PhpNamespace $namespace)
     {
         return;
+    }
+
+    public function setPrimary(bool $state = true)
+    {
+        $this->primary = $state;
+    }
+
+    public function setRequired(bool $state = true)
+    {
+        $this->required = $state;
+    }
+
+    public function isRequired(): bool
+    {
+        return (bool)$this->required;
+    }
+
+    public function isPrimary(): bool
+    {
+        return (bool)$this->primary;
+    }
+
+    public function setUnique(bool $state = true)
+    {
+        $this->unique = $state;
+    }
+
+    public function setDefaultValue($value)
+    {
+        $this->defaultValue = $value;
+    }
+
+    public function isUnique(): bool
+    {
+        return (bool)$this->unique;
+    }
+
+    public function getDefaultValue()
+    {
+        return $this->defaultValue;
     }
 }

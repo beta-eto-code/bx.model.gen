@@ -5,9 +5,11 @@ namespace Bx\Model\Gen\Readers;
 
 
 use Bitrix\Main\Db\SqlQueryException;
+use Bx\Model\Gen\Fields\Modifiers\HlModifier;
 use Bx\Model\Gen\Interfaces\BitrixContextInterface;
 use Bx\Model\Gen\Interfaces\EntityReaderInterface;
 use Bx\Model\Gen\Interfaces\FieldGeneratorInterface;
+use Bx\Model\Gen\Interfaces\FieldNameModifierInterface;
 use Nette\PhpGenerator\PhpNamespace;
 
 final class HlBlockReader implements EntityReaderInterface
@@ -17,7 +19,7 @@ final class HlBlockReader implements EntityReaderInterface
      */
     private $tableReader;
 
-    private function __construct(
+    public function __construct(
         array $hlBlockData,
         BitrixContextInterface $bitrixContext,
         PhpNamespace $namespace = null
@@ -66,11 +68,21 @@ final class HlBlockReader implements EntityReaderInterface
     }
 
     /**
-     * @return FieldGeneratorInterface[]|array
+     * @param FieldNameModifierInterface|null $fieldNameModifier
+     * @return array
      * @throws SqlQueryException
      */
-    public function getFields(): array
+    public function getFields(FieldNameModifierInterface $fieldNameModifier = null): array
     {
-        return $this->tableReader->getFields();
+        return $this->tableReader->getFields($fieldNameModifier ?? new HlModifier);
+    }
+
+    /**
+     * @return FieldGeneratorInterface|null
+     * @throws SqlQueryException
+     */
+    public function getPrimaryField(): ?FieldGeneratorInterface
+    {
+        return $this->tableReader->getPrimaryField();
     }
 }

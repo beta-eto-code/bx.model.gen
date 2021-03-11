@@ -52,4 +52,53 @@ interface FieldGeneratorInterface
      * @return string
      */
     public function setterName(): string;
+
+    /**
+     * @return string
+     */
+    public function getOrmClass(): string;
+
+    /**
+     * @param bool $state
+     * @return void
+     */
+    public function setPrimary(bool $state = true);
+
+    /**
+     * @param bool $state
+     * @return void
+     */
+    public function setRequired(bool $state = true);
+
+    /**
+     * @param bool $state
+     * @return mixed
+     */
+    public function setUnique(bool $state = true);
+
+    /**
+     * @param $value
+     * @return mixed
+     */
+    public function setDefaultValue($value);
+
+    /**
+     * @return bool
+     */
+    public function isPrimary(): bool;
+
+    /**
+     * @return bool
+     */
+    public function isRequired(): bool;
+
+    /**
+     * @return bool
+     */
+    public function isUnique(): bool;
+
+    /**
+     * @return mixed
+     */
+    public function getDefaultValue();
 }

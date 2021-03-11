@@ -12,4 +12,9 @@ class BooleanField extends BaseFieldGenerator
     {
         parent::__construct($name, 'bool', $fieldNameModifier);
     }
+
+    public function getOrmClass(): string
+    {
+        return \Bitrix\Main\ORM\Fields\BooleanField::class;
+    }
 }

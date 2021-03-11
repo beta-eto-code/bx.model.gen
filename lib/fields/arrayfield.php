@@ -12,4 +12,9 @@ class ArrayField extends BaseFieldGenerator
     {
         parent::__construct($name, 'array', $fieldNameModifier);
     }
+
+    public function getOrmClass(): string
+    {
+        return \Bitrix\Main\ORM\Fields\ArrayField::class;
+    }
 }

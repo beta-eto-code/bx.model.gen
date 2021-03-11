@@ -3,12 +3,17 @@
 
 namespace Bx\Model\Gen\Interfaces;
 
-use Iterator;
 
 interface EntityReaderInterface
 {
     /**
-     * @return FieldGeneratorInterface[]|array
+     * @param FieldNameModifierInterface|null $fieldNameModifier
+     * @return array
      */
-    public function getFields(): array;
+    public function getFields(FieldNameModifierInterface $fieldNameModifier = null): array;
+
+    /**
+     * @return FieldGeneratorInterface|null
+     */
+    public function getPrimaryField(): ?FieldGeneratorInterface;
 }

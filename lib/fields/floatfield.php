@@ -12,4 +12,9 @@ class FloatField extends BaseFieldGenerator
     {
         parent::__construct($name, 'float', $fieldNameModifier);
     }
+
+    public function getOrmClass(): string
+    {
+        return \Bitrix\Main\ORM\Fields\FloatField::class;
+    }
 }

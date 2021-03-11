@@ -62,57 +62,117 @@ final class TableReader implements EntityReaderInterface
 
     /**
      * @param ScalarField $field
+     * @param array $fieldDesc
      * @param FieldNameModifierInterface $nameModifier
      * @return FieldGeneratorInterface
      */
     private function getFieldGenerator(
         ScalarField $field,
+        array $fieldDesc,
         FieldNameModifierInterface $nameModifier
     ): FieldGeneratorInterface
     {
+        $isPrimary = $fieldDesc['Key'] === 'PRI';
+        $isRequired = $fieldDesc['Null'] === 'NO';
+        $isUnique = $isPrimary || $fieldDesc['Key'] === 'MUL';
+        $defaultValue = $fieldDesc['Default'];
+        $fieldGenerator = null;
+
         if ($field instanceof IntegerField) {
-            return new \Bx\Model\Gen\Fields\IntegerField($field->getName(), $nameModifier);
+            $fieldGenerator = new \Bx\Model\Gen\Fields\IntegerField($field->getName(), $nameModifier);
+        } else if ($field instanceof FloatField) {
+            $fieldGenerator = new \Bx\Model\Gen\Fields\FloatField($field->getName(), $nameModifier);
+        } else if ($field instanceof ArrayField) {
+            $fieldGenerator = new \Bx\Model\Gen\Fields\ArrayField($field->getName(), $nameModifier);
+        } else if ($field instanceof DatetimeField) {
+            $fieldGenerator = new \Bx\Model\Gen\Fields\DateTimeField($field->getName(), $nameModifier);
+        } else if ($field instanceof DateField) {
+            $fieldGenerator = new \Bx\Model\Gen\Fields\DateField($field->getName(), $nameModifier);
+        } else if ($field instanceof BooleanField) {
+            $fieldGenerator = new \Bx\Model\Gen\Fields\BooleanField($field->getName(), $nameModifier);
         }
 
-        if ($field instanceof FloatField) {
-            return new \Bx\Model\Gen\Fields\FloatField($field->getName(), $nameModifier);
+        $fieldGenerator = $fieldGenerator ?? new StringField($field->getName(), $nameModifier);
+        $fieldGenerator->setPrimary($isPrimary);
+        $fieldGenerator->setRequired($isRequired);
+        $fieldGenerator->setUnique($isUnique);
+        $fieldGenerator->setDefaultValue($defaultValue);
+
+        return $fieldGenerator;
+    }
+
+    /**
+     * @return array
+     * @throws SqlQueryException
+     */
+    private function getTableDesc(): array
+    {
+        $result = [];
+        $connection = $this->bitrixContext->getConnection();
+        $query = $connection->query("DESC {$this->tableName}");
+        while ($fieldDesc = $query->fetch()) {
+            $code = $fieldDesc['Field'];
+            $result[$code] = $fieldDesc;
         }
 
-        if ($field instanceof ArrayField) {
-            return new \Bx\Model\Gen\Fields\ArrayField($field->getName(), $nameModifier);
+        return $result;
+    }
+
+    /**
+     * @param ScalarField $field
+     * @param FieldGeneratorInterface $fieldGenerator
+     * @return FieldGeneratorInterface
+     */
+    private function prepareFieldGenerator(
+        ScalarField $field,
+        FieldGeneratorInterface $fieldGenerator
+    ): FieldGeneratorInterface
+    {
+        $isPrimary = $field->getParameter('primary');
+        if ($field->isPrimary()) {
+            $fieldGenerator->setPrimary(true);
         }
 
-        if ($field instanceof DatetimeField) {
-            return new \Bx\Model\Gen\Fields\DateTimeField($field->getName(), $nameModifier, $this->namespace);
+        if ($field->isRequired()) {
+            $fieldGenerator->setRequired(true);
         }
 
-        if ($field instanceof DateField) {
-            return new \Bx\Model\Gen\Fields\DateField($field->getName(), $nameModifier, $this->namespace);
-        }
-
-        if ($field instanceof BooleanField) {
-            return new \Bx\Model\Gen\Fields\BooleanField($field->getName(), $nameModifier);
-        }
-
-        return new StringField($field->getName(), $nameModifier);
+        return $fieldGenerator;
     }
 
     /**
      * @return FieldGeneratorInterface[]|array
      * @throws SqlQueryException
      */
-    public function getFields(): array
+    public function getFields(FieldNameModifierInterface $fieldNameModifier = null): array
     {
         if (!empty($this->fields)) {
             return $this->fields;
         }
 
         $this->fields = [];
-        $nameModifier = new StdModifier();
+        $nameModifier = $fieldNameModifier ?? new StdModifier();
+        $descFields = $this->getTableDesc();
         foreach ($this->getFieldsData() as $field) {
-            $this->fields[] = $this->getFieldGenerator($field, $nameModifier);
+            $fieldDesc = $descFields[$field->getName()];
+            $this->fields[] = $this->getFieldGenerator($field, $fieldDesc, $nameModifier);
         }
 
         return $this->fields;
+    }
+
+    /**
+     * @return FieldGeneratorInterface|null
+     * @throws SqlQueryException
+     */
+    public function getPrimaryField(): ?FieldGeneratorInterface
+    {
+        foreach ($this->getFields() as $field) {
+            if ($field->isPrimary()) {
+                return $field;
+            }
+        }
+
+        return null;
     }
 }

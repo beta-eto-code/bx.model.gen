@@ -42,4 +42,9 @@ class DateField extends BaseFieldGenerator
     {
         $namespace->addUse(Date::class);
     }
+
+    public function getOrmClass(): string
+    {
+        return \Bitrix\Main\ORM\Fields\DatetimeField::class;
+    }
 }

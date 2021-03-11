@@ -12,4 +12,9 @@ class StringField extends BaseFieldGenerator
     {
         parent::__construct($name, 'string', $fieldNameModifier);
     }
+
+    public function getOrmClass(): string
+    {
+        return \Bitrix\Main\ORM\Fields\StringField::class;
+    }
 }

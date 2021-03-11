@@ -1,32 +1,63 @@
 <?php
 
 
-namespace BxModelGen;
+namespace Bx\Model\Gen;
 
-use BxModelGen\Interfaces\EntityGeneratorInterface;
-use Nette\PhpGenerator\PhpNamespace;
+use Bx\Model\Gen\Interfaces\BitrixContextInterface;
+use Bx\Model\Gen\Interfaces\EntityGeneratorInterface;
+use Bx\Model\Gen\Readers\HlBlockReader;
+use Exception;
 
-class HlBlockGenerator implements EntityGeneratorInterface
+class HlBlockGenerator extends BaseGenerator
 {
     /**
      * @var string
      */
-    private $type;
+    private $hlBlockCode;
     /**
-     * @var string
+     * @var mixed|string
      */
-    private $code;
+    private $tableName;
 
-    public function __construct(string $type, string $code)
+    /**
+     * HlBlockGenerator constructor.
+     * @param string $hlBlockCode
+     * @param string $module
+     * @param BitrixContextInterface $bitrixContext
+     * @throws Exception
+     */
+    public function __construct(string $hlBlockCode, string $module, BitrixContextInterface $bitrixContext)
     {
-        $this->type = $type;
-        $this->code = $code;
+        parent::__construct($module, $bitrixContext);
+        $this->hlBlockCode = $hlBlockCode;
 
-        //(new PhpNamespace(''))->addClass()
+        $hlBlockData = $this->bitrixContext->getHlBlockByCode($this->hlBlockCode);
+        if (empty($hlBlockData)) {
+            throw new Exception("Hl block {$hlBlockCode} is not found");
+        }
+        $this->tableName = $hlBlockData['TABLE_NAME'] ?? '';
+        $this->reader = new HlBlockReader($hlBlockData, $bitrixContext);
+    }
+
+    protected function getInternalServiceClassName(): string
+    {
+        return $this->toCamelCase("{$this->tableName}_service");
+    }
+
+    protected function getInternalModelClassName(): string
+    {
+        return $this->toCamelCase("{$this->tableName}_model");
+    }
+
+    public function getInternalEntityClassName(): string
+    {
+        return $this->toCamelCase($this->tableName.'_table');
     }
 
     public function run()
     {
-        // TODO: Implement makeModel() method.
+        $this->initEntityClassGenerator($this->tableName)->run();
+        $this->initModelGenerator()->run();
+        $this->initServiceGenerator()->run();
     }
 }

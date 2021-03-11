@@ -12,6 +12,13 @@ interface BitrixContextInterface
     /**
      * @param string $type
      * @param string $code
+     * @return array
+     */
+    public function getIblock(string $type, string $code): array;
+
+    /**
+     * @param string $type
+     * @param string $code
      * @return int
      */
     public function getIblockId(string $type, string $code): int;

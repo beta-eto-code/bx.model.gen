@@ -20,6 +20,40 @@ use Iterator;
 class BitrixContext implements BitrixContextInterface
 {
     /**
+     * @var array
+     */
+    private $iblockList;
+
+    private function getIblockList(): array
+    {
+        if (!empty($this->iblockList)) {
+            return (array)$this->iblockList;
+        }
+
+        Loader::includeModule('iblock');
+        $iblockQuery = IblockTable::getList([]);
+        while ($iblockData = $iblockQuery->fetch()) {
+            $type = $iblockData['IBLOCK_TYPE_ID'];
+            $code = $iblockData['CODE'];
+            $this->iblockList[$type][$code] = $iblockData;
+        }
+
+        return $this->iblockList;
+    }
+
+    /**
+     * @param string $type
+     * @param string $code
+     * @return array
+     */
+    public function getIblock(string $type, string $code): array
+    {
+        $iblockList = $this->getIblockList();
+
+        return $iblockList[$type][$code] ?? [];
+    }
+
+    /**
      * @param string $type
      * @param string $code
      * @return int
@@ -67,7 +101,7 @@ class BitrixContext implements BitrixContextInterface
             yield $property;
         }
 
-        return new EmptyIterator();
+        return new \EmptyIterator();
     }
 
     /**

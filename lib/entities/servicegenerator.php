@@ -21,7 +21,7 @@ use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\ClassType;
 
-class TableServiceGenerator implements EntityGeneratorInterface
+class ServiceGenerator implements EntityGeneratorInterface
 {
     use Helper;
 
@@ -49,6 +49,10 @@ class TableServiceGenerator implements EntityGeneratorInterface
      * @var string
      */
     private $modelClass;
+    /**
+     * @var PhpFile
+     */
+    private $phpFile;
 
     public function __construct(
         EntityReaderInterface $reader,
@@ -60,12 +64,13 @@ class TableServiceGenerator implements EntityGeneratorInterface
     )
     {
         $this->reader = $reader;
-        $this->entityClass = $entityClass;
-        $this->modelClass = $modelClass;
+        $this->entityClass = $this->getShortClassName($entityClass);
+        $this->modelClass = $this->getShortClassName($modelClass);
         $this->phpFile = new PhpFile();
         $this->namespace = $this->phpFile->addNamespace($namespace);
         $this->namespace->addUse(BaseModelService::class);
         $this->namespace->addUse($modelClass);
+        $this->namespace->addUse($entityClass);
 
         $this->class = $this->namespace->addClass($name);
         $this->class->addExtend(BaseModelService::class);
@@ -108,10 +113,9 @@ class TableServiceGenerator implements EntityGeneratorInterface
         }, $this->reader->getFields());
 
         $select = "[\n\t\"".implode("\",\n\t\"", $selectList)."\"\n]";
-
         $method->setBody(<<<PHP
 \$params['select'] = \$params['select'] ?? {$select};
-\$list = \\{$this->entityClass}::getList(\$params);
+\$list = {$this->entityClass}::getList(\$params);
 
 return new ModelCollection(\$list, {$this->modelClass}::class);
 PHP
@@ -161,7 +165,7 @@ PHP
 
         $method->setBody(<<<PHP
 \$params['count_total'] = true;
-return \\{$this->entityClass}::getList(\$params)->getCount();
+return {$this->entityClass}::getList(\$params)->getCount();
 PHP
         );
 
@@ -189,7 +193,7 @@ if (!(\$item instanceof {$this->modelClass})) {
     return (new Result)->addError(new Error('Не найдена запись для удаления'));
 }
 
-return \\{$this->entityClass}::delete(\$id);
+return {$this->entityClass}::delete(\$id);
 PHP
         );
 
@@ -214,10 +218,10 @@ PHP
         $method->setBody(<<<PHP
 \$data = {$this->getSaveArray("\$model")};
 if (\$model->getId() > 0) {
-    return \\{$this->entityClass}::update(\$model->getId(), \$data);
+    return {$this->entityClass}::update(\$model->getId(), \$data);
 }
     
-\$result = \\{$this->entityClass}::add(\$data);
+\$result = {$this->entityClass}::add(\$data);
 if (\$result->isSuccess()) {
     \$model->setId(\$result->getId());
 }
@@ -240,6 +244,7 @@ PHP
     {
         $method = $this->class->addMethod('getFilterFields');
         $method->setPublic();
+        $method->setStatic();
         $method->setReturnType('array');
         $method->setBody("return {$this->getMapFields()};");
         $method->addComment('@return array');
@@ -249,11 +254,15 @@ PHP
     {
         $method = $this->class->addMethod('getSortFields');
         $method->setPublic();
+        $method->setStatic();
         $method->setReturnType('array');
         $method->setBody("return {$this->getMapFields()};");
         $method->addComment('@return array');
     }
 
+    /**
+     * @throws SystemException
+     */
     public function run()
     {
         $this->addGetListMethod();
@@ -264,7 +273,7 @@ PHP
         $this->addGetSortFieldsMethod();
         $this->addGetFilterFieldsMethod();
 
-        file_put_contents($this->path, $this->phpFile);
+        $this->saveFile($this->path, $this->phpFile);
     }
 
     protected function getReader(): EntityReaderInterface

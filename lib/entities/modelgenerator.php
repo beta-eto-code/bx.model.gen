@@ -4,8 +4,8 @@
 namespace Bx\Model\Gen\Entities;
 
 
+use Bitrix\Main\SystemException;
 use Bx\Model\AbsOptimizedModel;
-use Bx\Model\BaseModelService;
 use Bx\Model\Gen\Entities\Traits\Helper;
 use Bx\Model\Gen\Interfaces\EntityGeneratorInterface;
 use Bx\Model\Gen\Interfaces\EntityReaderInterface;
@@ -13,7 +13,7 @@ use Nette\PhpGenerator\PhpFile;
 use Nette\PhpGenerator\PhpNamespace;
 use Nette\PhpGenerator\ClassType;
 
-class TableModelGenerator implements EntityGeneratorInterface
+class ModelGenerator implements EntityGeneratorInterface
 {
     use Helper;
 
@@ -82,11 +82,14 @@ PHP
         return $this->reader;
     }
 
+    /**
+     * @throws SystemException
+     */
     public function run()
     {
         $this->addToArrayMethod();
         $this->initGettersSetters();
 
-        file_put_contents($this->path, $this->phpFile);
+        $this->saveFile($this->path, $this->phpFile);
     }
 }
