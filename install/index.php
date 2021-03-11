@@ -16,8 +16,8 @@ class bx_model_gen extends CModule
     {
         $this->MODULE_VERSION = "0.0.1";
         $this->MODULE_VERSION_DATE = "2021-02-19 06:35:34";
-        $this->MODULE_NAME = "Название модуля";
-        $this->MODULE_DESCRIPTION = "Описание модуля";
+        $this->MODULE_NAME = "Генератор bx.model";
+        $this->MODULE_DESCRIPTION = "";
     }
 
     public function DoInstall()
