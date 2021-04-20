@@ -32,5 +32,6 @@ class GenerateTable extends Command
         $tableGenerator->run();
 
         $output->writeln('Операция выполнена успешно.');
+        return 1;
     }
 }

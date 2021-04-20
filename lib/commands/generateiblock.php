@@ -33,5 +33,6 @@ class GenerateIblock extends Command
         $iblockGenerator->run();
 
         $output->writeln('Операция выполнена успешно.');
+        return 1;
     }
 }
