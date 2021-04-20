@@ -1,6 +1,13 @@
 #!/usr/bin/env php
 <?php
 
+define('NO_AGENT_CHECK', true);
+define('DisableEventsCheck', true);
+define('NO_KEEP_STATISTIC', true);
+define('NO_AGENT_STATISTIC', true);
+define('NOT_CHECK_PERMISSIONS', true);
+define('STOP_STATISTICS', true);
+
 use Bitrix\Main\Loader;
 use Bx\Model\Gen\Commands\GenerateHlBlock;
 use Bx\Model\Gen\Commands\GenerateIblock;
