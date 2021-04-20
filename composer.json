@@ -1,4 +1,7 @@
 {
+    "name": "beta/bx.model.gen",
+    "description": "Class generator for models and services",
+    "license": "MIT",
     "require": {
         "symfony/console": "^5.2",
         "nette/php-generator": "^3.5",
