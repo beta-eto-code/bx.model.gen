@@ -57,4 +57,14 @@ class StdModifier implements FieldNameModifierInterface
     {
         return strtolower($name);
     }
+
+    public function nameForSort(string $name): string
+    {
+        return $this->nameForSelect($name);
+    }
+
+    public function nameForSave(string $name): string
+    {
+        return $this->nameForSelect($name);
+    }
 }

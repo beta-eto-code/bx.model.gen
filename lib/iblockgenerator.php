@@ -3,6 +3,8 @@
 
 namespace Bx\Model\Gen;
 
+use Bx\Model\Gen\Entities\IblockServiceGenerator;
+use Bx\Model\Gen\Interfaces\EntityGeneratorInterface;
 use Bx\Model\Gen\Readers\IblockReader;
 use Bx\Model\Gen\Interfaces\BitrixContextInterface;
 use Exception;
@@ -55,6 +57,26 @@ class IblockGenerator extends BaseGenerator
         return 'Element'.ucfirst($apiCode).'Table';
     }
 
+
+    /**
+     * @return string
+     * @throws Exception
+     */
+    public function getObjectEntityClassName(): string
+    {
+        $iblock = $this->bitrixContext->getIblock($this->type, $this->code);
+        if (empty($iblock)) {
+            throw new Exception("Iblock {$this->type}:{$this->code} is not found!");
+        }
+
+        $apiCode = $iblock['API_CODE'];
+        if (empty($apiCode)) {
+            $apiCode = $this->code;
+        }
+
+        return 'EO_Element'.ucfirst($apiCode);
+    }
+
     /**
      * @return string
      */
@@ -67,6 +89,36 @@ class IblockGenerator extends BaseGenerator
         return $this->entityNamespace = '\Bitrix\Iblock\Elements';
     }
 
+    /**
+     * @return EntityGeneratorInterface
+     * @throws Exception
+     */
+    protected function initServiceGenerator(): EntityGeneratorInterface
+    {
+        $namespace = $this->getServiceNamespace();
+        $className = $this->getServiceClassName();
+
+        $entityNamespace = $this->getEntityNamespace();
+        $entityObjectClassName = $this->getObjectEntityClassName();
+        $entityClassName = $this->getEntityClassName();
+
+        $modelNamespace = $this->getModelNamespace();
+        $modelClassName = $this->getModelClassName();
+
+        return new IblockServiceGenerator(
+            $this->reader,
+            $className,
+            "{$entityNamespace}\\{$entityObjectClassName}",
+            "{$entityNamespace}\\{$entityClassName}",
+            "{$modelNamespace}\\{$modelClassName}",
+            $namespace,
+            $this->getAbsPath($this->getFileSave($namespace, $className))
+        );
+    }
+
+    /**
+     * @throws Exception
+     */
     public function run()
     {
         $this->initModelGenerator()->run();

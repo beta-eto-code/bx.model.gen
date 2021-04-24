@@ -31,7 +31,7 @@ trait Helper
     protected function getMapFields(): string
     {
         $mapArray = array_map(function (FieldGeneratorInterface $field) {
-            return "\t\"{$field->getExternalName()}\" => \"{$field->getSelectName()}\",";
+            return "\t\"{$field->getExternalName()}\" => \"{$field->getSortName()}\",";
         }, $this->getReader()->getFields());
 
         return "[\n".implode("\n", $mapArray)."\n]";
@@ -44,7 +44,7 @@ trait Helper
     protected function getSaveArray(string $varName): string
     {
         $saveArray = array_map(function (FieldGeneratorInterface $field) use ($varName) {
-            return "\t\"{$field->getSelectName()}\" => {$varName}->{$field->getterName()}(),";
+            return "\t\"{$field->getSaveName()}\" => {$varName}->{$field->getterName()}(),";
         }, $this->getReader()->getFields());
 
         return "[\n".implode("\n", $saveArray)."\n]";

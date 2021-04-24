@@ -94,6 +94,22 @@ abstract class BaseFieldGenerator implements FieldGeneratorInterface
     /**
      * @return string
      */
+    public function getSaveName(): string
+    {
+        return $this->nameModifier->nameForSave($this->name);
+    }
+
+    /**
+     * @return string
+     */
+    public function getSortName(): string
+    {
+        return $this->nameModifier->nameForSort($this->name);
+    }
+
+    /**
+     * @return string
+     */
     public function getFilterName(): string
     {
         return $this->nameModifier->nameForFilter($this->name);

@@ -105,6 +105,10 @@ final class IblockReader implements EntityReaderInterface
         FieldNameModifierInterface $fieldNameModifier
     ): FieldGeneratorInterface
     {
+        if (!in_array($fieldName, array_keys($this->getFieldsData()))) {
+            $fieldName .= "_VALUE";
+        }
+
         switch ($fieldType) {
             case PropertyTable::TYPE_NUMBER:
             case PropertyTable::TYPE_SECTION:

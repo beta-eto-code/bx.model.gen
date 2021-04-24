@@ -36,6 +36,16 @@ interface FieldGeneratorInterface
     /**
      * @return string
      */
+    public function getSaveName(): string;
+
+    /**
+     * @return string
+     */
+    public function getSortName(): string;
+
+    /**
+     * @return string
+     */
     public function getFilterName(): string;
 
     /**

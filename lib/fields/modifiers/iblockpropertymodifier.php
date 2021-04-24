@@ -34,16 +34,27 @@ class IblockPropertyModifier implements FieldNameModifierInterface
 
     public function nameForSelect(string $name): string
     {
-        return $name;
+        $stripedName = $this->stripValuePrefix($name);
+        return "{$name}\" => \"{$stripedName}.VALUE";
     }
 
     public function nameForFilter(string $name): string
     {
-        return $this->stripValuePrefix($name);
+        return $this->stripValuePrefix($name).".VALUE";
     }
 
     public function externalName(string $name): string
     {
         return strtolower($this->stripValuePrefix($name));
+    }
+
+    public function nameForSort(string $name): string
+    {
+        return $this->stripValuePrefix($name).".VALUE";
+    }
+
+    public function nameForSave(string $name): string
+    {
+        return $this->stripValuePrefix($name);
     }
 }

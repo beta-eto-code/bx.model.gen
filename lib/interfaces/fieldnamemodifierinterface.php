@@ -10,5 +10,7 @@ interface FieldNameModifierInterface
     public function getterName(string $name): string;
     public function nameForSelect(string $name): string;
     public function nameForFilter(string $name): string;
+    public function nameForSort(string $name): string;
+    public function nameForSave(string $name): string;
     public function externalName(string $name): string;
 }

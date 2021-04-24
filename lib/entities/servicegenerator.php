@@ -28,31 +28,31 @@ class ServiceGenerator implements EntityGeneratorInterface
     /**
      * @var EntityReaderInterface
      */
-    private $reader;
+    protected $reader;
     /**
      * @var PhpNamespace
      */
-    private $namespace;
+    protected $namespace;
     /**
      * @var string
      */
-    private $path;
+    protected $path;
     /**
      * @var ClassType
      */
-    private $class;
+    protected $class;
     /**
      * @var string
      */
-    private $entityClass;
+    protected $entityClass;
     /**
      * @var string
      */
-    private $modelClass;
+    protected $modelClass;
     /**
      * @var PhpFile
      */
-    private $phpFile;
+    protected $phpFile;
 
     public function __construct(
         EntityReaderInterface $reader,
@@ -77,7 +77,7 @@ class ServiceGenerator implements EntityGeneratorInterface
         $this->path = $path;
     }
 
-    private function addBxExceptionComment(Method $method)
+    protected function addBxExceptionComment(Method $method)
     {
         $this->namespace->addUse(ArgumentException::class);
         $this->namespace->addUse(ObjectPropertyException::class);
@@ -87,13 +87,13 @@ class ServiceGenerator implements EntityGeneratorInterface
         $method->addComment('@throws SystemException');
     }
 
-    private function initParams(Method $method)
+    protected function initParams(Method $method)
     {
         $params = $method->addParameter('params');
         $params->setType('array');
     }
 
-    private function initUserContext(Method $method)
+    protected function initUserContext(Method $method)
     {
         $userContext = $method->addParameter('userContext', null);
         $this->namespace->addUse(UserContextInterface::class);
@@ -101,7 +101,7 @@ class ServiceGenerator implements EntityGeneratorInterface
         $userContext->setNullable(true);
     }
 
-    private function addGetListMethod()
+    protected function addGetListMethod()
     {
         $method = $this->class->addMethod('getList');
         $method->setPublic();
@@ -206,7 +206,7 @@ PHP
         $method->addComment('@throws Exception');
     }
 
-    private function addSaveMethod()
+    protected function addSaveMethod()
     {
         $method = $this->class->addMethod('save');
         $method->setPublic();

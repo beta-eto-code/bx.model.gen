@@ -62,4 +62,14 @@ class HlModifier implements FieldNameModifierInterface
     {
         return strtolower($this->prepareName($name));
     }
+
+    public function nameForSort(string $name): string
+    {
+        return $this->nameForSelect($name);
+    }
+
+    public function nameForSave(string $name): string
+    {
+        return $this->nameForSelect($name);
+    }
 }
