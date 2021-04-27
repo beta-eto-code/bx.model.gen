@@ -14,6 +14,7 @@ use Bitrix\Main\Loader;
 use Bitrix\Main\LoaderException;
 use Bitrix\Main\ObjectPropertyException;
 use Bitrix\Main\SystemException;
+use Bitrix\Main\UserFieldTable;
 use Bx\Model\Gen\Interfaces\BitrixContextInterface;
 use Iterator;
 
@@ -98,6 +99,37 @@ class BitrixContext implements BitrixContextInterface
         ]);
 
         while ($property = $propertyQuery->fetch()) {
+            yield $property;
+        }
+
+        return new \EmptyIterator();
+    }
+
+    /**
+     * @param string $type
+     * @param string $code
+     * @return Iterator
+     * @throws ArgumentException
+     * @throws LoaderException
+     * @throws ObjectPropertyException
+     * @throws SystemException
+     */
+    public function getSectionProperties(string $type, string $code): Iterator
+    {
+        Loader::includeModule('iblock');
+
+        $iblockId = $this->getIblockId($type, $code);
+        if (!$iblockId) {
+            return new \EmptyIterator();
+        }
+
+        $query = UserFieldTable::getList([
+            'filter' => [
+                '=ENTITY_ID' => "IBLOCK_{$iblockId}_SECTION",
+            ],
+        ]);
+
+        while ($property = $query->fetch()) {
             yield $property;
         }
 

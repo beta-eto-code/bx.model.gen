@@ -31,6 +31,13 @@ interface BitrixContextInterface
     public function getIblockProperties(string $type, string $code): Iterator;
 
     /**
+     * @param string $type
+     * @param string $code
+     * @return Iterator
+     */
+    public function getSectionProperties(string $type, string $code): Iterator;
+
+    /**
      * @return Connection
      */
     public function getConnection();

@@ -11,6 +11,7 @@ define('STOP_STATISTICS', true);
 use Bitrix\Main\Loader;
 use Bx\Model\Gen\Commands\GenerateHlBlock;
 use Bx\Model\Gen\Commands\GenerateIblock;
+use Bx\Model\Gen\Commands\GenerateSection;
 use Bx\Model\Gen\Commands\GenerateTable;
 use Symfony\Component\Console\Application;
 
@@ -31,5 +32,6 @@ $app = new Application('Bitrix model generator', '0.0.1');
 $app->add(new GenerateIblock());
 $app->add(new GenerateTable());
 $app->add(new GenerateHlBlock());
+$app->add(new GenerateSection());
 
 $app->run();

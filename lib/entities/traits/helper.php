@@ -39,15 +39,21 @@ trait Helper
 
     /**
      * @param string $varName
+     * @param string ...$excludeFields
      * @return string
      */
-    protected function getSaveArray(string $varName): string
+    protected function getSaveArray(string $varName, string ...$excludeFields): string
     {
-        $saveArray = array_map(function (FieldGeneratorInterface $field) use ($varName) {
-            return "\t\"{$field->getSaveName()}\" => {$varName}->{$field->getterName()}(),";
+        $excludeFields = $excludeFields ?? [];
+        $saveArray = array_map(function (FieldGeneratorInterface $field) use ($varName, $excludeFields) {
+            if (in_array($field->getSaveName(), $excludeFields)) {
+                return '';
+            }
+
+            return "\t\"{$field->getSaveName()}\" => {$varName}->{$field->getterName()}(),\n";
         }, $this->getReader()->getFields());
 
-        return "[\n".implode("\n", $saveArray)."\n]";
+        return "[\n".implode("", $saveArray)."]";
     }
 
     /**
