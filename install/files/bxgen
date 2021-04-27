@@ -9,11 +9,7 @@ define('NOT_CHECK_PERMISSIONS', true);
 define('STOP_STATISTICS', true);
 
 use Bitrix\Main\Loader;
-use Bx\Model\Gen\Commands\GenerateHlBlock;
-use Bx\Model\Gen\Commands\GenerateIblock;
-use Bx\Model\Gen\Commands\GenerateSection;
-use Bx\Model\Gen\Commands\GenerateTable;
-use Symfony\Component\Console\Application;
+use Bx\Model\Gen\AppFactory;
 
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
@@ -27,11 +23,4 @@ $_SERVER["DOCUMENT_ROOT"] = __DIR__;
 require $_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php";
 
 Loader::includeModule('bx.model.gen');
-
-$app = new Application('Bitrix model generator', '0.0.1');
-$app->add(new GenerateIblock());
-$app->add(new GenerateTable());
-$app->add(new GenerateHlBlock());
-$app->add(new GenerateSection());
-
-$app->run();
+AppFactory::create()->run();
