@@ -216,7 +216,14 @@ PHP
         $this->namespace->addUse(AbsOptimizedModel::class);
 
         $method->setBody(<<<PHP
-\$data = {$this->getSaveArray("\$model")};
+\$dataInfo = {$this->getSaveArray("\$model")};
+\$data = [];
+foreach(\$dataInfo as \$name => \$info) {
+    if ((bool)\$info['isFill']) {
+        \$data[\$name] = \$info['value'];
+    }
+}
+
 if (\$model->getId() > 0) {
     return {$this->entityClass}::update(\$model->getId(), \$data);
 }

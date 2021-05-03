@@ -50,7 +50,10 @@ trait Helper
                 return '';
             }
 
-            return "\t\"{$field->getSaveName()}\" => {$varName}->{$field->getterName()}(),\n";
+            return "\t\"{$field->getSaveName()}\" => [
+                'value' => {$varName}->{$field->getterName()}(),\n
+                'isFill' => {$varName}->isFill(),\n
+            ]";
         }, $this->getReader()->getFields());
 
         return "[\n".implode("", $saveArray)."]";

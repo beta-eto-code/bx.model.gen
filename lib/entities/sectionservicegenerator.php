@@ -294,7 +294,14 @@ PHP
 
         $method->setBody(<<<PHP
 \$result = new Result();
-\$data = {$this->getSaveArray("\$model", 'ID', 'GLOBAL_ACTIVE', 'MODIFIED_BY', 'CREATED_BY', 'DATE_CREATE', 'SEARCHABLE_CONTENT', 'TMP_ID', 'TIMESTAMP_X')};
+\$dataInfo = {$this->getSaveArray("\$model", 'ID', 'GLOBAL_ACTIVE', 'MODIFIED_BY', 'CREATED_BY', 'DATE_CREATE', 'SEARCHABLE_CONTENT', 'TMP_ID', 'TIMESTAMP_X')};
+\$data = [];
+foreach(\$dataInfo as \$name => \$info) {
+    if ((bool)\$info['isFill']) {
+        \$data[\$name] = \$info['value'];
+    }
+}
+
 \$oSection = new CIBlockSection();
 if (\$model->getId() > 0) {
     \$isSuccess = (bool)\$oSection->Update(\$model->getId(), \$data);
