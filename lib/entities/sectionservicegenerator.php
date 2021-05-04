@@ -294,8 +294,12 @@ PHP
 
         $method->setBody(<<<PHP
 \$result = new Result();
-\$dataInfo = {$this->getSaveArray("\$model", 'ID', 'GLOBAL_ACTIVE', 'MODIFIED_BY', 'CREATED_BY', 'DATE_CREATE', 'SEARCHABLE_CONTENT', 'TMP_ID', 'TIMESTAMP_X')};
-\$data = [];
+\$dataInfo = {$this->getSaveArray("\$model", 'ID', 'GLOBAL_ACTIVE', 'MODIFIED_BY', 'CREATED_BY', 'DATE_CREATE', 'SEARCHABLE_CONTENT', 'TMP_ID', 'TIMESTAMP_X', 'IBLOCK_ID')};
+
+\$data = [
+    'IBLOCK_ID' => \$this->getIblockId(),
+];
+
 foreach(\$dataInfo as \$name => \$info) {
     if ((bool)\$info['isFill']) {
         \$data[\$name] = \$info['value'];

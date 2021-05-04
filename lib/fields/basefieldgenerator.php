@@ -86,6 +86,14 @@ abstract class BaseFieldGenerator implements FieldGeneratorInterface
     /**
      * @return string
      */
+    public function getOriginalName(): string
+    {
+        return (string)$this->name;
+    }
+
+    /**
+     * @return string
+     */
     public function getSelectName(): string
     {
         return $this->nameModifier->nameForSelect($this->name);

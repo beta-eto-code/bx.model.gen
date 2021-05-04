@@ -50,10 +50,12 @@ trait Helper
                 return '';
             }
 
-            return "\t\"{$field->getSaveName()}\" => [
-                'value' => {$varName}->{$field->getterName()}(),\n
-                'isFill' => {$varName}->isFill(),\n
-            ]";
+            return <<<PHP
+    '{$field->getSaveName()}' => [
+        'value' => {$varName}->{$field->getterName()}(),
+        'isFill' => {$varName}->isFill('{$field->getOriginalName()}'),
+    ],\n
+PHP;
         }, $this->getReader()->getFields());
 
         return "[\n".implode("", $saveArray)."]";

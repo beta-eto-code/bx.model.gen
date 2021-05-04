@@ -89,9 +89,11 @@ PHP
                 return '';
             }
 
-            return "\nif(\$model->isFill()) {
-                \$element->set('{$field->getSaveName()}', \$model->{$field->getterName()}());
-            }\n";
+            return <<<PHP
+\nif(\$model->isFill('{$field->getOriginalName()}')) {
+    \$element->set('{$field->getSaveName()}', \$model->{$field->getterName()}());
+}\n
+PHP;
         }, $this->getReader()->getFields());
 
 

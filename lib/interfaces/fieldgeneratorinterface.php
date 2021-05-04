@@ -31,6 +31,11 @@ interface FieldGeneratorInterface
     /**
      * @return string
      */
+    public function getOriginalName(): string;
+
+    /**
+     * @return string
+     */
     public function getSelectName(): string;
 
     /**
