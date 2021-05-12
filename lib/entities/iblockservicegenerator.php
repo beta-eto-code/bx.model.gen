@@ -102,10 +102,13 @@ PHP;
 
         $method->setBody(<<<PHP
 \$element = new {$this->elementObjectClass}();
-{$saveList}
 if (\$model->getId() > 0) {
     \$element->setId(\$model->getId());
     \$element->sysChangeState(State::CHANGED);
+}
+
+{$saveList}
+if (\$model->getId() > 0) {
     return \$element->save();
 }
     
