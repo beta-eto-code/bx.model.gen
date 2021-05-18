@@ -9,11 +9,5 @@
         "symfony/console": "^5.2",
         "nette/php-generator": "^3.5",
         "beta/bx.model": "dev-master"
-    },
-    "repositories": [
-      {
-        "type": "vcs",
-        "url": "git@cvs.beta.agency:nesterov/bx.model.git"
-      }
-    ]
+    }
 }
