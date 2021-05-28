@@ -31,17 +31,22 @@ class SectionGenerator extends BaseGenerator
 
     protected function getInternalServiceClassName(): string
     {
-        return $this->toCamelCase("{$this->type}_{$this->code}_section_service");
+        return $this->toCamelCase("{$this->code}_section_service");
     }
 
     protected function getInternalModelClassName(): string
     {
-        return $this->toCamelCase("{$this->type}_{$this->code}_section_model");
+        return $this->toCamelCase("{$this->code}_section_model");
     }
 
     public function getInternalEntityClassName(): string
     {
         return '';
+    }
+
+    protected function addNamespace(): string
+    {
+        return '\\'.$this->toCamelCase($this->category ?? $this->type);
     }
 
     /**

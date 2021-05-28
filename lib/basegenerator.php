@@ -56,6 +56,10 @@ abstract class BaseGenerator implements EntityGeneratorInterface
      * @var BitrixContextInterface
      */
     protected $bitrixContext;
+    /**
+     * @var string|null
+     */
+    protected $category;
 
     /**
      * @return string
@@ -77,6 +81,16 @@ abstract class BaseGenerator implements EntityGeneratorInterface
         $this->module = $module;
         $this->bitrixContext = $bitrixContext;
         $this->baseNamespace = $this->getNameSpace($module);
+        $this->category = null;
+    }
+
+    /**
+     * @param string $category
+     * @return void
+     */
+    public function setCategory(string $category)
+    {
+        $this->category = $category;
     }
 
     /**
@@ -133,6 +147,11 @@ abstract class BaseGenerator implements EntityGeneratorInterface
         $this->serviceNamespace = $namespace;
     }
 
+    protected function addNamespace(): string
+    {
+        return !empty($this->category) ? '\\'.$this->toCamelCase($this->category) : '';
+    }
+
     /**
      * @return string
      */
@@ -142,7 +161,7 @@ abstract class BaseGenerator implements EntityGeneratorInterface
             return $this->modelNamespace;
         }
 
-        return $this->modelNamespace = "{$this->baseNamespace}\\Models";
+        return $this->modelNamespace = "{$this->baseNamespace}\\Models".$this->addNamespace();
     }
 
     /**
@@ -154,7 +173,7 @@ abstract class BaseGenerator implements EntityGeneratorInterface
             return $this->serviceNamespace;
         }
 
-        return $this->serviceNamespace = "{$this->baseNamespace}\\Services";
+        return $this->serviceNamespace = "{$this->baseNamespace}\\Services".$this->addNamespace();
     }
 
     /**

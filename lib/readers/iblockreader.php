@@ -23,6 +23,7 @@ use Nette\PhpGenerator\PhpNamespace;
 final class IblockReader implements EntityReaderInterface
 {
     const TYPE_DATE_TIME = 'datetime';
+    const TYPE_MULTI = 'multi';
 
     /**
      * @var string
@@ -113,8 +114,9 @@ final class IblockReader implements EntityReaderInterface
             case PropertyTable::TYPE_NUMBER:
             case PropertyTable::TYPE_SECTION:
             case PropertyTable::TYPE_ELEMENT:
-                return new IntegerField($fieldName, $fieldNameModifier);
             case PropertyTable::TYPE_LIST:
+                return new IntegerField($fieldName, $fieldNameModifier);
+            case IblockReader::TYPE_MULTI:
                 return new ArrayField($fieldName, $fieldNameModifier);
             case IblockReader::TYPE_DATE_TIME:
                 return new DateTimeField($fieldName, $fieldNameModifier, $this->namespace);
@@ -149,7 +151,7 @@ final class IblockReader implements EntityReaderInterface
 
         $nameModifier = new IblockPropertyModifier();
         foreach ($this->getPropertiesData() as $property) {
-            $typeCode = $property['PROPERTY_TYPE'];
+            $typeCode = $property['MULTIPLE'] === 'Y' ? IblockReader::TYPE_MULTI : $property['PROPERTY_TYPE'];
             $propertyCode = $property['CODE'];
             $this->fields[] = $this->getFieldGenerator($propertyCode, $typeCode, $nameModifier);
         }

@@ -4,6 +4,7 @@
 namespace Bx\Model\Gen;
 
 use Bx\Model\Gen\Entities\IblockServiceGenerator;
+use Bx\Model\Gen\Entities\ModelGenerator;
 use Bx\Model\Gen\Interfaces\EntityGeneratorInterface;
 use Bx\Model\Gen\Readers\IblockReader;
 use Bx\Model\Gen\Interfaces\BitrixContextInterface;
@@ -28,14 +29,14 @@ class IblockGenerator extends BaseGenerator
         $this->reader = new IblockReader($type, $code, $bitrixContext);
     }
 
-    protected function getInternalServiceClassName(): string
-    {
-        return $this->toCamelCase("{$this->type}_{$this->code}_service");
-    }
-
     protected function getInternalModelClassName(): string
     {
-        return $this->toCamelCase("{$this->type}_{$this->code}_model");
+        return $this->toCamelCase("{$this->code}_model");
+    }
+
+    protected function getInternalServiceClassName(): string
+    {
+        return $this->toCamelCase("{$this->code}_service");
     }
 
     /**
@@ -54,7 +55,7 @@ class IblockGenerator extends BaseGenerator
             $apiCode = $this->code;
         }
 
-        return 'Element'.ucfirst($apiCode).'Table';
+        return 'Element'.$this->toCamelCase($apiCode).'Table';
     }
 
 
@@ -74,7 +75,7 @@ class IblockGenerator extends BaseGenerator
             $apiCode = $this->code;
         }
 
-        return 'EO_Element'.ucfirst($apiCode);
+        return 'EO_Element'.$this->toCamelCase($apiCode);
     }
 
     /**
@@ -87,6 +88,11 @@ class IblockGenerator extends BaseGenerator
         }
 
         return $this->entityNamespace = '\Bitrix\Iblock\Elements';
+    }
+
+    protected function addNamespace(): string
+    {
+        return '\\'.$this->toCamelCase($this->category ?? $this->type);
     }
 
     /**

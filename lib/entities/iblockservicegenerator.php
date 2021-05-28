@@ -13,6 +13,8 @@ use Bx\Model\Gen\Interfaces\EntityReaderInterface;
 use Bx\Model\Gen\Interfaces\FieldGeneratorInterface;
 use Bx\Model\Interfaces\ModelServiceInterface;
 use Bx\Model\ModelCollection;
+use Bx\Model\Interfaces\Models\IblockServiceInterface;
+use Bx\Model\Traits\IblockServiceTrait;
 
 class IblockServiceGenerator extends ServiceGenerator
 {
@@ -37,7 +39,12 @@ class IblockServiceGenerator extends ServiceGenerator
 
         $this->namespace->addUse(BaseLinkedModelService::class);
         $this->namespace->addUse(ModelServiceInterface::class);
+        $this->namespace->addUse(IblockServiceInterface::class);
+        $this->namespace->addUse(IblockServiceTrait::class);
         $this->class->setExtends(BaseLinkedModelService::class);
+        $this->class->setImplements([IblockServiceInterface::class]);
+        $this->class->addTrait(IblockServiceTrait::class);
+
         $fileServiceProperty = $this->class->addProperty('fileService');
         $fileServiceProperty->addComment("\n@var ModelServiceInterface\n");
 
@@ -45,6 +52,24 @@ class IblockServiceGenerator extends ServiceGenerator
         $fileServiceParameter = $constructor->addParameter('fileService');
         $fileServiceParameter->setType(ModelServiceInterface::class);
         $constructor->setBody('$this->fileService = $fileService;');
+    }
+
+    protected function addGetIblockIdMethod()
+    {
+        $iblockIdProperty = $this->class->addProperty('iblockId');
+        $iblockIdProperty->setPrivate();
+
+        $method = $this->class->addMethod('getIblockId');
+        $method->isPublic();
+        $method->setReturnType('int');
+        $method->setBody(<<<PHP
+if (!empty(\$this->iblockId)) {
+    return \$this->iblockId;
+}
+
+return \$this->iblockId = (int){$this->entityClass}::getEntity()->getIblock()->getId();
+PHP
+        );
     }
 
     protected function addGetListMethod()
@@ -90,7 +115,7 @@ PHP
             }
 
             return <<<PHP
-\nif(\$model->isFill('{$field->getOriginalName()}')) {
+\nif(\$model->hasValueKey('{$field->getOriginalName()}')) {
     \$element->set('{$field->getSaveName()}', \$model->{$field->getterName()}());
 }\n
 PHP;
@@ -159,6 +184,7 @@ PHP
 
     public function run()
     {
+        $this->addGetIblockIdMethod();
         $this->addLinkedFieldsMethod();
         parent::run();
     }

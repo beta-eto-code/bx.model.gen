@@ -8,6 +8,7 @@ use Bx\Model\Gen\IblockGenerator;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateIblock extends Command
@@ -19,7 +20,8 @@ class GenerateIblock extends Command
             ->setDescription('Генерация кода для инфоблока')
             ->addArgument('type', InputArgument::REQUIRED, 'Тип инфоблока')
             ->addArgument('code', InputArgument::REQUIRED, 'Код инфоблока')
-            ->addArgument('module', InputArgument::REQUIRED, 'Модуль для генерации кода');
+            ->addArgument('module', InputArgument::REQUIRED, 'Модуль для генерации кода')
+            ->addOption('category', 'c', InputOption::VALUE_OPTIONAL);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -27,9 +29,14 @@ class GenerateIblock extends Command
         $type = $input->getArgument('type');
         $code = $input->getArgument('code');
         $module = $input->getArgument('module');
+        $category = $input->getOption('category');
 
         $bitrixContext = new BitrixContext();
         $iblockGenerator = new IblockGenerator($type, $code, $module, $bitrixContext);
+        if (!empty($category)) {
+            $iblockGenerator->setCategory($category);    
+        }
+
         $iblockGenerator->run();
 
         $output->writeln('Операция выполнена успешно.');

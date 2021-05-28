@@ -53,7 +53,7 @@ trait Helper
             return <<<PHP
     '{$field->getSaveName()}' => [
         'value' => {$varName}->{$field->getterName()}(),
-        'isFill' => {$varName}->isFill('{$field->getOriginalName()}'),
+        'isFill' => {$varName}->hasValueKey('{$field->getOriginalName()}'),
     ],\n
 PHP;
         }, $this->getReader()->getFields());

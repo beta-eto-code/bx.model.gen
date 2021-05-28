@@ -10,6 +10,7 @@ use Exception;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenerateHlBlock extends Command
@@ -20,7 +21,8 @@ class GenerateHlBlock extends Command
             ->setAliases(['gh'])
             ->setDescription('Генерация кода для HL блока')
             ->addArgument('code', InputArgument::REQUIRED, 'Код HL блока')
-            ->addArgument('module', InputArgument::REQUIRED, 'Модуль для генерации кода');
+            ->addArgument('module', InputArgument::REQUIRED, 'Модуль для генерации кода')
+            ->addOption('category', 'c', InputOption::VALUE_OPTIONAL);
     }
 
     /**
@@ -33,9 +35,14 @@ class GenerateHlBlock extends Command
     {
         $code = $input->getArgument('code');
         $module = $input->getArgument('module');
+        $category = $input->getOption('category');
 
         $bitrixContext = new BitrixContext();
         $tableGenerator = new HlBlockGenerator($code, $module, $bitrixContext);
+        if (!empty($category)) {
+            $tableGenerator->setCategory($category);    
+        }
+
         $tableGenerator->run();
 
         $output->writeln('Операция выполнена успешно.');
