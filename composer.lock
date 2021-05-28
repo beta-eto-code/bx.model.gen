@@ -12,12 +12,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/beta-eto-code/bx.model.git",
-                "reference": "ad814c2738ebb0a853fdf3145043fe1761ef8c88"
+                "reference": "08d45aca782ce7283e8ca30b2dc40e011c6009c4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/beta-eto-code/bx.model/zipball/ad814c2738ebb0a853fdf3145043fe1761ef8c88",
-                "reference": "ad814c2738ebb0a853fdf3145043fe1761ef8c88",
+                "url": "https://api.github.com/repos/beta-eto-code/bx.model/zipball/08d45aca782ce7283e8ca30b2dc40e011c6009c4",
+                "reference": "08d45aca782ce7283e8ca30b2dc40e011c6009c4",
                 "shasum": ""
             },
             "default-branch": true,
@@ -34,9 +34,9 @@
             ],
             "support": {
                 "issues": "https://github.com/beta-eto-code/bx.model/issues",
-                "source": "https://github.com/beta-eto-code/bx.model/tree/master"
+                "source": "https://github.com/beta-eto-code/bx.model/tree/0.8.0"
             },
-            "time": "2021-05-18T08:41:24+00:00"
+            "time": "2021-05-28T19:38:39+00:00"
         },
         {
             "name": "nette/php-generator",
