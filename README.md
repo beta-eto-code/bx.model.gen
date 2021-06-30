@@ -1,5 +1,11 @@
 # Генератор bx.model
 
+### Установка
+
+```
+composer require beta/bx.model.gen
+```
+
 После установки модуля в корне проекта будет доступен исполняемый файл bxgen. 
 С помощью данного файла можно сгенерировать классы сервисов моделей и таблиц.
 
@@ -13,18 +19,19 @@
 ### Пример генерации для hl блока
 
 ```bash
-    ./bxgen gen:hlblock MyHLBlock my.module
+    ./bxgen gen:hlblock MyHLBlock my.module -c someCategory
 ```
 
 Где:
 * MyHLBlock - код hl блока
 * my.module - название модуля где будет сгенерирован код
+* -c [Название категории] - указываем категорию, не обязательная опция 
 
 
 ### Пример генерации для инфоблока
 
 ```bash
-    ./bxgen gen:iblock type code my.module
+    ./bxgen gen:iblock type code my.module -c someCategory
 ```
 
 Где:
@@ -35,20 +42,23 @@
 ### Пример генерации для разделов инфоблока
 
 ```bash
-    ./bxgen gen:section type code my.module
+    ./bxgen gen:section type code my.module -c someCategory
 ```
 
 Где:
 * type - тип инфоблока
 * code - код инфоблока
 * my.module - название модуля где будет сгенерирован код
+* -c [Название категории] - указываем категорию, не обязательная опция 
 
 ### Пример генерации для таблиц
 
 ```bash
-    ./bxgen gen:table table my.module
+    ./bxgen gen:table table my.module -c someCategory -b BaseName
 ```
 
 Где:
 * table - название таблицы
 * my.module - название модуля где будет сгенерирован код
+* -c [Название категории] - указываем категорию, не обязательная опция
+* -b [Базовое имя классов] - указываем базовое имя генерируемых классов (BaseNameService, BaseNameModel, BaseNameTable)
