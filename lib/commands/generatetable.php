@@ -21,7 +21,8 @@ class GenerateTable extends Command
             ->setDescription('Генерация кода для таблицы')
             ->addArgument('table', InputArgument::REQUIRED, 'Название таблицы')
             ->addArgument('module', InputArgument::REQUIRED, 'Модуль для генерации кода')
-            ->addOption('category', 'c', InputOption::VALUE_OPTIONAL);
+            ->addOption('category', 'c', InputOption::VALUE_OPTIONAL)
+            ->addOption('basename', 'b', InputOption::VALUE_OPTIONAL);
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -29,11 +30,15 @@ class GenerateTable extends Command
         $table = $input->getArgument('table');
         $module = $input->getArgument('module');
         $category = $input->getOption('category');
+        $baseName = $input->getOption('basename');
 
         $bitrixContext = new BitrixContext();
         $tableGenerator = new TableGenerator($table, $module, $bitrixContext);
         if (!empty($category)) {
-            $tableGenerator->setCategory($category);    
+            $tableGenerator->setCategory($category);
+        }
+        if (!empty($baseName)) {
+            $tableGenerator->setBaseName($baseName);
         }
 
         $tableGenerator->run();

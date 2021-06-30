@@ -20,22 +20,23 @@ class TableGenerator extends BaseGenerator
         $this->tableName = $tableName;
         $this->module = $module;
         $this->reader = new TableReader($tableName, $bitrixContext);
+        $this->baseName = $this->toCamelCase($tableName);
         parent::__construct($module, $bitrixContext);
     }
 
     protected function getInternalServiceClassName(): string
     {
-        return $this->toCamelCase($this->tableName."_service");
+        return $this->baseName."Service";
     }
 
     protected function getInternalModelClassName(): string
     {
-        return $this->toCamelCase($this->tableName."_model");
+        return $this->baseName."Model";
     }
 
     public function getInternalEntityClassName(): string
     {
-        return $this->toCamelCase($this->tableName.'_table');
+        return $this->baseName."Table";
     }
 
     public function run()
