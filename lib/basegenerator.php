@@ -60,6 +60,10 @@ abstract class BaseGenerator implements EntityGeneratorInterface
      * @var string|null
      */
     protected $category;
+    /**
+     * @var string|null
+     */
+    protected $baseName;
 
     /**
      * @return string
@@ -91,6 +95,16 @@ abstract class BaseGenerator implements EntityGeneratorInterface
     public function setCategory(string $category)
     {
         $this->category = $category;
+    }
+    /**
+     * @param string $baseName
+     * @return void
+     */
+    public function setBaseName(string $baseName)
+    {
+        if($baseName) {
+          $this->baseName = $baseName;
+        }
     }
 
     /**
