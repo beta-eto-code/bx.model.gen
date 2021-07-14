@@ -8,6 +8,6 @@
         "ext-json": "*",
         "symfony/console": "^5.2",
         "nette/php-generator": "^3.5",
-        "beta/bx.model": "dev-master"
+        "beta/bx.model": "^1.0"
     }
 }
