@@ -238,6 +238,7 @@ PHP
         $this->initUserContext($method);
 
         $method->setBody(<<<PHP
+\$params['filter']['=IBLOCK_ID'] = \$this->getIblockId();
 \$params['count_total'] = true;
 return \$this->getEntityObjectMethod()::getList(\$params)->getCount();
 PHP
