@@ -73,7 +73,7 @@ class bx_model_gen extends CModule
             return false;
         }
 
-        require_once $modulePath;
+        require_once $_SERVER['DOCUMENT_ROOT'].$modulePath;
         $moduleInstaller = new bx_model();
         $resultInstall = (bool)$moduleInstaller->DoInstall();
         if (!$resultInstall) {
