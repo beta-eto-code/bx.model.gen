@@ -74,7 +74,7 @@ class bx_model_gen extends CModule
         }
 
         require_once $modulePath;
-        $moduleInstaller = new bx_router();
+        $moduleInstaller = new bx_model();
         $resultInstall = (bool)$moduleInstaller->DoInstall();
         if (!$resultInstall) {
             $this->setError('Ошибка установки модуля bx.model');
