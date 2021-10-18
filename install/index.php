@@ -103,7 +103,10 @@ class bx_model_gen extends CModule
 
     public function InstallFiles()
     {
-        CopyDirFiles(__DIR__ . "/files", $_SERVER["DOCUMENT_ROOT"]);
+        if (!ModuleManager::isModuleInstalled('bx.cli')) {
+            CopyDirFiles(__DIR__ . "/files", $_SERVER["DOCUMENT_ROOT"]);
+        }
+
         return true;
     }
 
