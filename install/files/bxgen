@@ -11,6 +11,9 @@ define('STOP_STATISTICS', true);
 use Bitrix\Main\Loader;
 use Bx\Model\Gen\AppFactory;
 
+$_SERVER["DOCUMENT_ROOT"] = __DIR__;
+require $_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php";
+
 if (file_exists(__DIR__ . '/vendor/autoload.php')) {
     require_once __DIR__ . '/vendor/autoload.php';
 } elseif (file_exists(__DIR__ . '/local/vendor/autoload.php')) {
@@ -18,9 +21,6 @@ if (file_exists(__DIR__ . '/vendor/autoload.php')) {
 } elseif (file_exists(__DIR__ . '/local/modules/bx.model.gen/vendor/autoload.php')) {
     require_once __DIR__ . '/local/modules/bx.model.gen/vendor/autoload.php';
 }
-
-$_SERVER["DOCUMENT_ROOT"] = __DIR__;
-require $_SERVER["DOCUMENT_ROOT"]."/bitrix/modules/main/include/prolog_before.php";
 
 Loader::includeModule('bx.model.gen');
 AppFactory::create()->run();
